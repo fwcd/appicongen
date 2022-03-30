@@ -94,6 +94,8 @@ def generate_icon(input_img: Image, output_path: Path, size: int):
         img.save(output_path)
 
 def main():
+    # Parse CLI arguments
+
     parser = argparse.ArgumentParser(description='Tool for generating macOS/iOS app icons')
 
     for idiom in ICON_SIZES.keys():
@@ -106,21 +108,27 @@ def main():
     args = parser.parse_args()
     arg_dict = vars(args)
 
+    # Prepare paths
+
     input_path = Path(args.input)
     output_path = Path(args.output)
 
     print(f'==> Creating {output_path} if needed...')
     output_path.mkdir(parents=True, exist_ok=True)
 
-    idioms = sorted(idiom for idiom in ICON_SIZES.keys() if args.all or arg_dict[idiom.replace('-', '_')])
+    # Read and aggregate idioms and (distinct) icon sizes
+
+    idioms = {idiom for idiom in ICON_SIZES.keys() if args.all or arg_dict[idiom.replace('-', '_')]}
+    sizes = {size.filename(): size.scaled_size() for idiom in idioms for size in ICON_SIZES[idiom]}
 
     if not idioms:
-        print('==> No idioms specified, not generating any (use --all to generate all)')
+        print('==> No idioms specified, thus not generating any icons (use --all to generate all)')
     
+    # Generate scaled icons
+    
+    print('==> Generating scaled icons...')
     with Image.open(input_path) as input_img:
-        for idiom in idioms:
-            print(f'==> Generating icons for the {idiom} idiom...')
-            for size in ICON_SIZES[idiom]:
-                print(f'Generating {str(size)}')
-                generate_icon(input_img, output_path / size.filename(), size.scaled_size())
-
+        for filename, scaled_size in sizes.items():
+            print(f'Generating {filename}')
+            generate_icon(input_img, output_path / filename, scaled_size)
+    
