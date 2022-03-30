@@ -2,6 +2,7 @@ import argparse
 
 from dataclasses import dataclass
 from fractions import Fraction
+from pathlib import Path
 from PIL import Image
 from typing import Optional, Union
 
@@ -12,13 +13,19 @@ class IconSize:
     subtype: Optional[str] = None
     role: Optional[str] = None
 
-    def size_str(self):
+    def scaled_size(self) -> int:
+        return int(self.size * self.scale)
+    
+    def filename(self) -> str:
+        return f'{self.scaled_size()}.png'
+
+    def size_str(self) -> str:
         size = self.size
         if isinstance(size, Fraction):
             size = float(size)
         return f'{size}x{size}'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.size_str()} ({self.scale}x)'
 
 ICON_SIZES = {
@@ -81,22 +88,38 @@ ICON_SIZES = {
     ]
 }
 
+def generate_icon(input_path: Path, output_path: Path, size: int):
+    with Image.open(input_path) as img:
+        img.thumbnail((size, size), Image.LANCZOS)
+        img.save(output_path)
+
 def main():
     parser = argparse.ArgumentParser(description='Tool for generating macOS/iOS app icons')
 
     for idiom in ICON_SIZES.keys():
         parser.add_argument(f'--{idiom}', action='store_true', help=f'Generate icons for the {idiom} idiom')
 
+    parser.add_argument('-a', '--all', action='store_true', help='Generate icons for all idioms')
+    parser.add_argument('-o', '--output', default='./AppIcon.appiconset', help='Path to the output appiconset bundle.')
+    parser.add_argument('input', help='Path to the input image (a 1024x1024 PNG image is recommended)')
+
     args = parser.parse_args()
     arg_dict = vars(args)
-    idioms = sorted(idiom.replace('_', '-') for idiom, enabled in arg_dict.items() if enabled)
-    
+
+    input_path = Path(args.input)
+    output_path = Path(args.output)
+
+    print(f'==> Creating {output_path} if needed...')
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    idioms = sorted(idiom for idiom in ICON_SIZES.keys() if args.all or arg_dict[idiom.replace('-', '_')])
+
     if not idioms:
-        print('Defaulting to all idioms...')
-        idioms = sorted(ICON_SIZES.keys())
+        print('==> No idioms specified, not generating any (use --all to generate all)')
     
     for idiom in idioms:
         print(f'==> Generating icons for the {idiom} idiom...')
         for size in ICON_SIZES[idiom]:
             print(f'Generating {str(size)}')
+            generate_icon(input_path, output_path / size.filename(), size.scaled_size())
 
