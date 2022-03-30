@@ -23,7 +23,7 @@ def main():
             role = image.get('role', None)
             subtype = image.get('subtype', None)
             if '.' in size:
-                size = f"Fractional('{size}')"
+                size = f"Fraction('{size}')"
             params = [
                 ('idiom', f"'{idiom}'"),
                 ('size', size),

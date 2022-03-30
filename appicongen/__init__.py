@@ -15,6 +15,7 @@ if sys.version_info < (3, 9):
 
 @dataclass
 class IconSize:
+    idiom: str
     size: Union[int, Fraction]
     scale: int
     subtype: Optional[str] = None
@@ -39,62 +40,53 @@ class IconSize:
         return f'{self.size_str()} ({self.scale}x)'
 
 ICON_SIZES = {
-    'iphone': [
-        IconSize(size=20, scale=2),
-        IconSize(size=20, scale=3),
-        IconSize(size=29, scale=1),
-        IconSize(size=29, scale=2),
-        IconSize(size=29, scale=3),
-        IconSize(size=40, scale=2),
-        IconSize(size=40, scale=3),
-        IconSize(size=57, scale=1),
-        IconSize(size=57, scale=2),
-        IconSize(size=60, scale=1),
-        IconSize(size=60, scale=2),
+    'ios': [
+        IconSize(idiom='iphone', size=20, scale=2),
+        IconSize(idiom='iphone', size=20, scale=3),
+        IconSize(idiom='iphone', size=29, scale=2),
+        IconSize(idiom='iphone', size=29, scale=3),
+        IconSize(idiom='iphone', size=40, scale=2),
+        IconSize(idiom='iphone', size=40, scale=3),
+        IconSize(idiom='iphone', size=60, scale=2),
+        IconSize(idiom='iphone', size=60, scale=3),
+        IconSize(idiom='ipad', size=20, scale=1),
+        IconSize(idiom='ipad', size=20, scale=2),
+        IconSize(idiom='ipad', size=29, scale=1),
+        IconSize(idiom='ipad', size=29, scale=2),
+        IconSize(idiom='ipad', size=40, scale=1),
+        IconSize(idiom='ipad', size=40, scale=2),
+        IconSize(idiom='ipad', size=76, scale=2),
+        IconSize(idiom='ipad', size=Fraction('83.5'), scale=2),
+        IconSize(idiom='ios-marketing', size=1024, scale=1),
     ],
-    'ipad': [
-        IconSize(size=20, scale=1),
-        IconSize(size=20, scale=2),
-        IconSize(size=29, scale=1),
-        IconSize(size=29, scale=2),
-        IconSize(size=40, scale=1),
-        IconSize(size=40, scale=2),
-        IconSize(size=50, scale=1),
-        IconSize(size=50, scale=2),
-        IconSize(size=72, scale=1),
-        IconSize(size=72, scale=2),
-        IconSize(size=76, scale=1),
-        IconSize(size=76, scale=2),
-        IconSize(size=Fraction('83.5'), scale=2),
+    'macos': [
+        IconSize(idiom='mac', size=16, scale=1),
+        IconSize(idiom='mac', size=16, scale=2),
+        IconSize(idiom='mac', size=32, scale=1),
+        IconSize(idiom='mac', size=32, scale=2),
+        IconSize(idiom='mac', size=128, scale=1),
+        IconSize(idiom='mac', size=128, scale=2),
+        IconSize(idiom='mac', size=256, scale=1),
+        IconSize(idiom='mac', size=256, scale=2),
+        IconSize(idiom='mac', size=512, scale=1),
+        IconSize(idiom='mac', size=512, scale=2),
     ],
-    'ios-marketing': [
-        IconSize(size=1024, scale=1),
-    ],
-    'mac': [
-        IconSize(size=16, scale=1),
-        IconSize(size=16, scale=2),
-        IconSize(size=32, scale=1),
-        IconSize(size=32, scale=2),
-        IconSize(size=128, scale=1),
-        IconSize(size=256, scale=1),
-        IconSize(size=256, scale=2),
-        IconSize(size=512, scale=1),
-        IconSize(size=512, scale=2),
-    ],
-    'watch': [
-        IconSize(size=24, scale=2, subtype='38mm', role='notificationCenter'),
-        IconSize(size=Fraction('27.5'), scale=2, subtype='42mm', role='notificationCenter'),
-        IconSize(size=29, scale=2, role='companionSettings'),
-        IconSize(size=29, scale=3, role='companionSettings'),
-        IconSize(size=40, scale=2, subtype='38mm', role='appLauncher'),
-        IconSize(size=44, scale=2, subtype='40mm', role='appLauncher'),
-        IconSize(size=50, scale=2, subtype='44mm', role='appLauncher'),
-        IconSize(size=86, scale=2, subtype='38mm', role='quickLook'),
-        IconSize(size=98, scale=2, subtype='42mm', role='quickLook'),
-        IconSize(size=108, scale=2, subtype='44mm', role='quickLook'),
-    ],
-    'watch-marketing': [
-        IconSize(size=1024, scale=1),
+    'watchos': [
+        IconSize(idiom='watch', size=24, scale=2, role='notificationCenter', subtype='38mm'),
+        IconSize(idiom='watch', size=Fraction('27.5'), scale=2, role='notificationCenter', subtype='42mm'),
+        IconSize(idiom='watch', size=29, scale=2, role='companionSettings'),
+        IconSize(idiom='watch', size=29, scale=3, role='companionSettings'),
+        IconSize(idiom='watch', size=33, scale=2, role='notificationCenter', subtype='45mm'),
+        IconSize(idiom='watch', size=40, scale=2, role='appLauncher', subtype='38mm'),
+        IconSize(idiom='watch', size=44, scale=2, role='appLauncher', subtype='40mm'),
+        IconSize(idiom='watch', size=46, scale=2, role='appLauncher', subtype='41mm'),
+        IconSize(idiom='watch', size=50, scale=2, role='appLauncher', subtype='44mm'),
+        IconSize(idiom='watch', size=51, scale=2, role='appLauncher', subtype='45mm'),
+        IconSize(idiom='watch', size=86, scale=2, role='quickLook', subtype='38mm'),
+        IconSize(idiom='watch', size=98, scale=2, role='quickLook', subtype='42mm'),
+        IconSize(idiom='watch', size=108, scale=2, role='quickLook', subtype='44mm'),
+        IconSize(idiom='watch', size=117, scale=2, role='quickLook', subtype='45mm'),
+        IconSize(idiom='watch-marketing', size=1024, scale=1),
     ]
 }
 
@@ -114,8 +106,8 @@ def main():
 
     parser = argparse.ArgumentParser(description='Tool for generating macOS/iOS app icons')
 
-    for idiom in ICON_SIZES.keys():
-        parser.add_argument(f'--{idiom}', action='store_true', help=f'Generate icons for the {idiom} idiom')
+    for template in ICON_SIZES.keys():
+        parser.add_argument(f'--{template}', action='store_true', help=f'Generate icons for the {template} template')
 
     parser.add_argument('-a', '--all', action='store_true', help='Generate icons for all idioms')
     parser.add_argument('-o', '--output', default='./AppIcon.appiconset', help='Path to the output appiconset bundle.')
@@ -137,13 +129,13 @@ def main():
         shutil.rmtree(output_path)
     output_path.mkdir(parents=True)
 
-    # Read and aggregate idioms and (distinct) icon sizes
+    # Resolve templates and (distinct) icon sizes
 
-    idioms = {idiom for idiom in ICON_SIZES.keys() if args.all or arg_dict[idiom.replace('-', '_')]}
-    size_files = {size.filename(): size.scaled_size() for idiom in idioms for size in ICON_SIZES[idiom]}
+    templates = {template for template in ICON_SIZES.keys() if args.all or arg_dict[template.replace('-', '_')]}
+    size_files = {size.filename(): size.scaled_size() for template in templates for size in ICON_SIZES[template]}
 
-    if not idioms:
-        print('==> No idioms specified, thus not generating any icons (use --all to generate all)')
+    if not templates:
+        print('==> No templates specified, thus not generating any icons (use --all to generate all)')
     
     # Generate scaled icons
     
@@ -160,9 +152,9 @@ def main():
             'size': size.size_str(),
             'expected-size': str(size.scaled_size()),
             'filename': size.filename(),
-            'idiom': idiom,
+            'idiom': size.idiom,
             'scale': size.scale_str(),
-        } for idiom in idioms for size in ICON_SIZES[idiom]]
+        } for template in templates for size in ICON_SIZES[template]]
     }
     with open(output_path / args.manifest_name, 'w') as f:
         f.write(json.dumps(manifest, indent=2))
@@ -170,8 +162,8 @@ def main():
     # Print summary
 
     print('==> Summary')
-    for idiom in idioms:
-        sizes = ICON_SIZES[idiom]
-        print(f'Generated {len(sizes)} {idiom} icon(s):')
+    for template in templates:
+        sizes = ICON_SIZES[template]
+        print(f'Generated {len(sizes)} {template} icon(s):')
         for size in sizes:
             print(f'  {str(size)}')
