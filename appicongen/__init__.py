@@ -1,11 +1,17 @@
 import argparse
 import json
+import shutil
+import sys
 
 from dataclasses import dataclass
 from fractions import Fraction
 from pathlib import Path
 from PIL import Image
 from typing import Optional, Union
+
+if sys.version_info < (3, 9):
+    print('Python version >= 3.9 is required!')
+    exit(1)
 
 @dataclass
 class IconSize:
@@ -97,6 +103,12 @@ def generate_icon(input_img: Image, output_path: Path, size: int):
         img.thumbnail((size, size), Image.LANCZOS)
         img.save(output_path)
 
+def confirm(prompt: str):
+    answer = input(f'{prompt} [y/n] ')
+    if answer.lower() != 'y':
+        print('Exiting')
+        exit(0)
+
 def main():
     # Parse CLI arguments
 
@@ -115,11 +127,15 @@ def main():
 
     # Prepare paths
 
-    input_path = Path(args.input)
-    output_path = Path(args.output)
+    input_path = Path(args.input).resolve()
+    output_path = Path(args.output).resolve()
 
-    print(f'==> Creating {output_path} if needed...')
-    output_path.mkdir(parents=True, exist_ok=True)
+    print(f'==> (Re)creating {output_path} if needed...')
+    if output_path.exists():
+        if not output_path.is_relative_to(Path.cwd()):
+            confirm(f'The output path is outside your current working dir and will be deleted, are you sure?')
+        shutil.rmtree(output_path)
+    output_path.mkdir(parents=True)
 
     # Read and aggregate idioms and (distinct) icon sizes
 
