@@ -2,6 +2,7 @@ import argparse
 
 from dataclasses import dataclass
 from fractions import Fraction
+from PIL import Image
 from typing import Optional, Union
 
 @dataclass
@@ -10,6 +11,15 @@ class IconSize:
     scale: int
     subtype: Optional[str] = None
     role: Optional[str] = None
+
+    def size_str(self):
+        size = self.size
+        if isinstance(size, Fraction):
+            size = float(size)
+        return f'{size}x{size}'
+
+    def __str__(self):
+        return f'{self.size_str()} ({self.scale}x)'
 
 ICON_SIZES = {
     'iphone': [
@@ -87,5 +97,6 @@ def main():
     
     for idiom in idioms:
         print(f'==> Generating icons for the {idiom} idiom...')
-        print(ICON_SIZES[idiom.replace('_', '-')])
+        for size in ICON_SIZES[idiom]:
+            print(f'Generating {str(size)}')
 
