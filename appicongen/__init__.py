@@ -134,7 +134,6 @@ def main():
     print('==> Generating scaled icons...')
     with Image.open(input_path) as input_img:
         for filename, scaled_size in size_files.items():
-            print(f'Generating {filename}')
             generate_icon(input_img, output_path / filename, scaled_size)
     
     # Generate manifest
@@ -152,3 +151,11 @@ def main():
     with open(output_path / args.manifest_name, 'w') as f:
         f.write(json.dumps(manifest, indent=2))
     
+    # Print summary
+
+    print('==> Summary')
+    for idiom in idioms:
+        sizes = ICON_SIZES[idiom]
+        print(f'Generated {len(sizes)} {idiom} icon(s):')
+        for size in sizes:
+            print(f'  {str(size)}')
