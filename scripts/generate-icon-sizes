@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+
+from pathlib import Path
+
+def main():
+    parser = argparse.ArgumentParser(description='Generates Python declarations for the icons from an appiconset bundle')
+    parser.add_argument('-m', '--manifest-name', default='Contents.json', help='Name of the manifest (should generally not be changed).')
+    parser.add_argument('input', help='The path to the input appiconset bundle')
+
+    args = parser.parse_args()
+    input_path = Path(args.input) / args.manifest_name
+
+    with open(input_path, 'r') as f:
+        manifest = json.loads(f.read())
+        print('[')
+        for image in manifest['images']:
+            idiom = image['idiom']
+            size = image['size'].split('x')[0]
+            scale = image['scale'].split('x')[0]
+            role = image.get('role', None)
+            subtype = image.get('subtype', None)
+            if '.' in size:
+                size = f"Fractional('{size}')"
+            params = [
+                ('idiom', f"'{idiom}'"),
+                ('size', size),
+                ('scale', scale),
+                ('role', f"'{role}'" if role else None),
+                ('subtype', f"'{subtype}'" if subtype else None),
+            ]
+            print(f"    IconSize({', '.join(f'{k}={v}' for k, v in params if v)}),")
+        print(']')
+
+if __name__ == '__main__':
+    main()
