@@ -1,4 +1,5 @@
 import argparse
+import json
 
 from dataclasses import dataclass
 from fractions import Fraction
@@ -24,6 +25,9 @@ class IconSize:
         if isinstance(size, Fraction):
             size = float(size)
         return f'{size}x{size}'
+    
+    def scale_str(self) -> str:
+        return f'{self.scale}x'
 
     def __str__(self) -> str:
         return f'{self.size_str()} ({self.scale}x)'
@@ -103,6 +107,7 @@ def main():
 
     parser.add_argument('-a', '--all', action='store_true', help='Generate icons for all idioms')
     parser.add_argument('-o', '--output', default='./AppIcon.appiconset', help='Path to the output appiconset bundle.')
+    parser.add_argument('-m', '--manifest-name', default='Contents.json', help='Name of the manifest (should generally not be changed).')
     parser.add_argument('input', help='Path to the input image (a 1024x1024 PNG image is recommended)')
 
     args = parser.parse_args()
@@ -119,7 +124,7 @@ def main():
     # Read and aggregate idioms and (distinct) icon sizes
 
     idioms = {idiom for idiom in ICON_SIZES.keys() if args.all or arg_dict[idiom.replace('-', '_')]}
-    sizes = {size.filename(): size.scaled_size() for idiom in idioms for size in ICON_SIZES[idiom]}
+    size_files = {size.filename(): size.scaled_size() for idiom in idioms for size in ICON_SIZES[idiom]}
 
     if not idioms:
         print('==> No idioms specified, thus not generating any icons (use --all to generate all)')
@@ -128,7 +133,21 @@ def main():
     
     print('==> Generating scaled icons...')
     with Image.open(input_path) as input_img:
-        for filename, scaled_size in sizes.items():
+        for filename, scaled_size in size_files.items():
             print(f'Generating {filename}')
             generate_icon(input_img, output_path / filename, scaled_size)
+    
+    # Generate manifest
+
+    print('==> Generating manifest')
+    manifest = {
+        'images': [{
+            'size': size.size_str(),
+            'expected-size': size.scaled_size(),
+            'idiom': idiom,
+            'scale': size.scale_str(),
+        } for idiom, sizes in ICON_SIZES.items() for size in sizes]
+    }
+    with open(output_path / args.manifest_name, 'w') as f:
+        f.write(json.dumps(manifest, indent=2))
     
