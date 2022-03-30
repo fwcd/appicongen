@@ -143,7 +143,8 @@ def main():
     manifest = {
         'images': [{
             'size': size.size_str(),
-            'expected-size': size.scaled_size(),
+            'expected-size': str(size.scaled_size()),
+            'filename': size.filename(),
             'idiom': idiom,
             'scale': size.scale_str(),
         } for idiom, sizes in ICON_SIZES.items() for size in sizes]
