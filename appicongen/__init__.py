@@ -88,8 +88,8 @@ ICON_SIZES = {
     ]
 }
 
-def generate_icon(input_path: Path, output_path: Path, size: int):
-    with Image.open(input_path) as img:
+def generate_icon(input_img: Image, output_path: Path, size: int):
+    with input_img.copy() as img:
         img.thumbnail((size, size), Image.LANCZOS)
         img.save(output_path)
 
@@ -117,9 +117,10 @@ def main():
     if not idioms:
         print('==> No idioms specified, not generating any (use --all to generate all)')
     
-    for idiom in idioms:
-        print(f'==> Generating icons for the {idiom} idiom...')
-        for size in ICON_SIZES[idiom]:
-            print(f'Generating {str(size)}')
-            generate_icon(input_path, output_path / size.filename(), size.scaled_size())
+    with Image.open(input_path) as input_img:
+        for idiom in idioms:
+            print(f'==> Generating icons for the {idiom} idiom...')
+            for size in ICON_SIZES[idiom]:
+                print(f'Generating {str(size)}')
+                generate_icon(input_img, output_path / size.filename(), size.scaled_size())
 
