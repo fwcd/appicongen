@@ -146,7 +146,7 @@ def main():
             'filename': size.filename(),
             'idiom': idiom,
             'scale': size.scale_str(),
-        } for idiom, sizes in ICON_SIZES.items() for size in sizes]
+        } for idiom in idioms for size in ICON_SIZES[idiom]]
     }
     with open(output_path / args.manifest_name, 'w') as f:
         f.write(json.dumps(manifest, indent=2))
