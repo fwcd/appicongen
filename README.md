@@ -1,6 +1,6 @@
 # Appicongen
 
-A small CLI tool for generating app icon sets for macOS/iOS projects.
+A small CLI tool for generating app icon sets for macOS, iOS and watchOS projects.
 
 ## Examples
 
