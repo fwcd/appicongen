@@ -16,5 +16,7 @@ appicongen --ios -o MyIcon.appiconset icon.png
 
 ```sh
 # Generate MyIcon.appiconset from icon.png with only macOS icons
-appicongen --macos -o MyIcon.appiconset icon.png
+# and automatically resize/mask the images to a rounded rectangle
+# shape in the style of macOS Big Sur.
+appicongen --macos --bigsurify -o MyIcon.appiconset icon.png
 ```
