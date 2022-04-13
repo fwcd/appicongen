@@ -4,6 +4,7 @@ __pycache__
 build
 *.egg-info
 *.pyc
+dist
 
 /*.png
 /*.appiconset
