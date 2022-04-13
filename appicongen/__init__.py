@@ -6,7 +6,7 @@ import sys
 from dataclasses import dataclass
 from fractions import Fraction
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageDraw
 from typing import Optional, Union
 
 if sys.version_info < (3, 9):
@@ -90,10 +90,26 @@ ICON_SIZES = {
     ]
 }
 
-def generate_icon(input_img: Image, output_path: Path, size: int):
-    with input_img.copy() as img:
-        img.thumbnail((size, size), Image.LANCZOS)
-        img.save(output_path)
+def generate_icon(input_img: Image, output_path: Path, size: int, bigsurify: bool=False):
+    if bigsurify:
+        rect_size = int(size * 0.8)
+        rect_offset = (size - rect_size) // 2
+        corner_radius = int(size * 0.175)
+
+        # Paste a scaled and rounded-corner version of the image
+        with Image.new('L', (rect_size, rect_size)) as mask:
+            draw = ImageDraw.Draw(mask)
+            draw.rounded_rectangle((0, 0, rect_size, rect_size), fill=255, radius=corner_radius)
+            with input_img.copy() as base_img:
+                base_img.thumbnail((rect_size, rect_size), Image.LANCZOS)
+                with Image.new(base_img.mode, (size, size)) as img:
+                    img.paste(base_img, (rect_offset, rect_offset), mask)
+                    img.save(output_path)
+    else:
+        # Just scale the image
+        with input_img.copy() as img:
+            img.thumbnail((size, size), Image.LANCZOS)
+            img.save(output_path)
 
 def confirm(prompt: str):
     answer = input(f'{prompt} [y/n] ')
@@ -112,6 +128,7 @@ def main():
     parser.add_argument('-a', '--all', action='store_true', help='Generate icons for all idioms')
     parser.add_argument('-o', '--output', default='./AppIcon.appiconset', help='Path to the output appiconset bundle.')
     parser.add_argument('-m', '--manifest-name', default='Contents.json', help='Name of the manifest (should generally not be changed).')
+    parser.add_argument('-b', '--bigsurify', action='store_true', help='Cut out a rounded-rectangle shape in the style of a macOS Big Sur icon (useful in conjunction with --macos).')
     parser.add_argument('input', help='Path to the input image (a 1024x1024 PNG image is recommended)')
 
     args = parser.parse_args()
@@ -142,7 +159,7 @@ def main():
     print('==> Generating scaled icons...')
     with Image.open(input_path) as input_img:
         for filename, scaled_size in size_files.items():
-            generate_icon(input_img, output_path / filename, scaled_size)
+            generate_icon(input_img, output_path / filename, scaled_size, args.bigsurify)
     
     # Generate manifest
 
