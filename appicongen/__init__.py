@@ -165,13 +165,15 @@ def main():
 
     print('==> Generating manifest')
     manifest = {
-        'images': [{
+        'images': [{k: v for k, v in {
             'size': size.size_str(),
             'expected-size': str(size.scaled_size()),
             'filename': size.filename(),
             'idiom': size.idiom,
             'scale': size.scale_str(),
-        } for template in templates for size in ICON_SIZES[template]]
+            'role': size.role,
+            'subtype': size.subtype,
+        }.items() if v} for template in templates for size in ICON_SIZES[template]]
     }
     with open(output_path / args.manifest_name, 'w') as f:
         f.write(json.dumps(manifest, indent=2))
