@@ -90,7 +90,7 @@ ICON_SIZES = {
     ]
 }
 
-def generate_icon(input_img: Image, output_path: Path, size: int, bigsurify: bool=False):
+def generate_icon(input_img: Image.Image, output_path: Path, size: int, bigsurify: bool=False):
     if bigsurify:
         rect_size = int(size * 0.8)
         rect_offset = (size - rect_size) // 2
@@ -102,7 +102,7 @@ def generate_icon(input_img: Image, output_path: Path, size: int, bigsurify: boo
             draw.rounded_rectangle((0, 0, rect_size, rect_size), fill=255, radius=corner_radius)
             with input_img.copy() as base_img:
                 base_img.thumbnail((rect_size, rect_size), Image.LANCZOS)
-                with Image.new(base_img.mode, (size, size)) as img:
+                with Image.new(base_img.mode, (size, size)) as img: # pyright: ignore[reportGeneralTypeIssues]
                     img.paste(base_img, (rect_offset, rect_offset), mask)
                     img.save(output_path)
     else:
