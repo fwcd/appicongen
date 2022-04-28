@@ -1,0 +1,24 @@
+name: Typecheck
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 14
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: Install Pyright
+      run: npm install -g pyright
+    - name: Install dependencies
+      run: pip3 install .
+    - name: Run typecheck
+      run: pyright

@@ -1,5 +1,7 @@
 # Appicongen
 
+[![Typecheck](https://github.com/fwcd/appicongen/actions/workflows/typecheck.yml/badge.svg)](https://github.com/fwcd/appicongen/actions/workflows/typecheck.yml)
+
 A small CLI tool for generating app icon sets for macOS, iOS and watchOS projects.
 
 ## Examples
