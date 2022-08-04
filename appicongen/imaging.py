@@ -1,10 +1,25 @@
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageOps
 
+RESIZE_MODES = {
+    'fit': ImageOps.fit,
+    'pad': ImageOps.pad,
+}
+
+AVAILABLE_RESIZE_MODES = sorted(RESIZE_MODES.keys())
+DEFAULT_RESIZE_MODE = 'fit'
+
 def open_image(path: Path) -> Image.Image:
     return Image.open(path)
 
-def generate_icon(input_img: Image.Image, output_path: Path, width: int, height: int, bigsurify: bool=False):
+def generate_icon(
+    input_img: Image.Image,
+    output_path: Path,
+    width: int,
+    height: int,
+    resize_mode: str=DEFAULT_RESIZE_MODE,
+    bigsurify: bool=False
+):
     if bigsurify:
         assert width == height, "Bigsurify is currently only supported for quadratic icons!"
         size = width
@@ -24,5 +39,5 @@ def generate_icon(input_img: Image.Image, output_path: Path, width: int, height:
     else:
         # Just crop and scale the image
         with input_img.copy() as img:
-            with ImageOps.fit(img, (width, height), Image.LANCZOS) as thumb_img:
+            with RESIZE_MODES[resize_mode](img, (width, height), Image.LANCZOS) as thumb_img:
                 thumb_img.save(output_path)

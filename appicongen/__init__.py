@@ -5,7 +5,7 @@ import sys
 
 from pathlib import Path
 
-from appicongen.imaging import generate_icon, open_image
+from appicongen.imaging import AVAILABLE_RESIZE_MODES, DEFAULT_RESIZE_MODE, generate_icon, open_image
 from appicongen.size import ICON_SIZES
 
 if sys.version_info < (3, 9):
@@ -29,6 +29,7 @@ def main():
     parser.add_argument('-a', '--all', action='store_true', help='Generate icons for all idioms')
     parser.add_argument('-o', '--output', default='./AppIcon.appiconset', help='Path to the output appiconset bundle.')
     parser.add_argument('-m', '--manifest-name', default='Contents.json', help='Name of the manifest (should generally not be changed).')
+    parser.add_argument('-r', '--resize-mode', default=DEFAULT_RESIZE_MODE, choices=AVAILABLE_RESIZE_MODES, help='Resize mode (only relevant for non-quadratic icons).')
     parser.add_argument('-b', '--bigsurify', action='store_true', help='Cut out a rounded-rectangle shape in the style of a macOS Big Sur icon (useful in conjunction with --macos).')
     parser.add_argument('input', help='Path to the input image (a 1024x1024 PNG image is recommended)')
 
@@ -65,6 +66,7 @@ def main():
                 output_path=output_path / filename,
                 width=scaled_width,
                 height=scaled_height,
+                resize_mode=args.resize_mode,
                 bigsurify=args.bigsurify
             )
     
