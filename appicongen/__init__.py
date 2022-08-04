@@ -5,7 +5,7 @@ import sys
 
 from pathlib import Path
 
-from appicongen.imaging import AVAILABLE_RESIZE_MODES, DEFAULT_RESIZE_MODE, generate_icon, open_image
+from appicongen.imaging import AVAILABLE_RESIZE_MODES, DEFAULT_RESIZE_MODE, find_mean_color, generate_icon, open_image
 from appicongen.size import ICON_SIZES
 
 if sys.version_info < (3, 9):
@@ -60,6 +60,7 @@ def main():
     
     print('==> Generating scaled icons...')
     with open_image(input_path) as input_img:
+        bg_color = find_mean_color(input_img)
         for filename, (scaled_width, scaled_height) in size_files.items():
             generate_icon(
                 input_img=input_img,
@@ -67,6 +68,7 @@ def main():
                 width=scaled_width,
                 height=scaled_height,
                 resize_mode=args.resize_mode,
+                bg_color=bg_color,
                 bigsurify=args.bigsurify
             )
     

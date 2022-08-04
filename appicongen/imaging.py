@@ -1,9 +1,13 @@
+import numpy as np
+
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageOps
+from typing import Optional
 
+RESAMPLER = Image.LANCZOS
 RESIZE_MODES = {
-    'fit': ImageOps.fit,
-    'pad': ImageOps.pad,
+    'fit': lambda img, size, bg: ImageOps.fit(img, size=size, method=RESAMPLER),
+    'pad': lambda img, size, bg: ImageOps.pad(img, size=size, color=bg, method=RESAMPLER),
 }
 
 AVAILABLE_RESIZE_MODES = sorted(RESIZE_MODES.keys())
@@ -12,12 +16,19 @@ DEFAULT_RESIZE_MODE = 'fit'
 def open_image(path: Path) -> Image.Image:
     return Image.open(path)
 
+def find_mean_color(img: Image.Image) -> tuple:
+    arr = np.asarray(img)
+    arr = arr.reshape((-1, arr.shape[-1]))
+    mean = np.mean(arr, axis=0).astype(int)
+    return tuple(mean)
+
 def generate_icon(
     input_img: Image.Image,
     output_path: Path,
     width: int,
     height: int,
     resize_mode: str=DEFAULT_RESIZE_MODE,
+    bg_color: Optional[tuple]=None,
     bigsurify: bool=False
 ):
     if bigsurify:
@@ -32,12 +43,12 @@ def generate_icon(
             draw = ImageDraw.Draw(mask)
             draw.rounded_rectangle((0, 0, rect_size, rect_size), fill=255, radius=corner_radius)
             with input_img.copy() as base_img:
-                base_img.thumbnail((rect_size, rect_size), Image.LANCZOS)
+                base_img.thumbnail((rect_size, rect_size), resample=RESAMPLER)
                 with Image.new(base_img.mode, (size, size)) as img: # pyright: ignore[reportGeneralTypeIssues]
                     img.paste(base_img, (rect_offset, rect_offset), mask)
                     img.save(output_path)
     else:
         # Just crop and scale the image
         with input_img.copy() as img:
-            with RESIZE_MODES[resize_mode](img, (width, height), Image.LANCZOS) as thumb_img:
+            with RESIZE_MODES[resize_mode](img, (width, height), bg_color) as thumb_img:
                 thumb_img.save(output_path)
