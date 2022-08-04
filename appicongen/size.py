@@ -7,6 +7,7 @@ class IconSize:
     idiom: str
     size: Union[int, Fraction]
     scale: int
+    aspect_ratio: Union[int, Fraction] = 1
     subtype: Optional[str] = None
     role: Optional[str] = None
 
@@ -17,10 +18,13 @@ class IconSize:
         return f'{self.scaled_size()}.png'
 
     def size_str(self) -> str:
-        size = self.size
-        if isinstance(size, Fraction):
-            size = float(size)
-        return f'{size}x{size}'
+        width = self.size * self.aspect_ratio
+        height = self.size * self.aspect_ratio
+        if isinstance(width, Fraction):
+            width = float(width)
+        if isinstance(height, Fraction):
+            height = float(height)
+        return f'{width}x{height}'
     
     def scale_str(self) -> str:
         return f'{self.scale}x'
@@ -59,6 +63,10 @@ ICON_SIZES = {
         IconSize(idiom='mac', size=256, scale=2),
         IconSize(idiom='mac', size=512, scale=1),
         IconSize(idiom='mac', size=512, scale=2),
+    ],
+    'tvos': [
+        IconSize(idiom='tv', size=240, aspect_ratio=Fraction(10, 6), scale=1),
+        IconSize(idiom='tv', size=240, aspect_ratio=Fraction(10, 6), scale=2),
     ],
     'watchos': [
         IconSize(idiom='watch', size=24, scale=2, role='notificationCenter', subtype='38mm'),
