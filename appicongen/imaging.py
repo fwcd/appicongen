@@ -1,5 +1,5 @@
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 def open_image(path: Path) -> Image.Image:
     return Image.open(path)
@@ -22,7 +22,7 @@ def generate_icon(input_img: Image.Image, output_path: Path, width: int, height:
                     img.paste(base_img, (rect_offset, rect_offset), mask)
                     img.save(output_path)
     else:
-        # Just scale the image
+        # Just crop and scale the image
         with input_img.copy() as img:
-            img.thumbnail((width, height), Image.LANCZOS)
-            img.save(output_path)
+            with ImageOps.fit(img, (width, height), Image.LANCZOS) as thumb_img:
+                thumb_img.save(output_path)
