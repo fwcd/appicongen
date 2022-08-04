@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from fractions import Fraction
 from typing import Optional, Union
 
+from appicongen.utils import to_decimal
+
 @dataclass
 class IconSize:
     idiom: str
@@ -18,12 +20,8 @@ class IconSize:
         return f'{self.scaled_size()}.png'
 
     def size_str(self) -> str:
-        width = self.size * self.aspect_ratio
-        height = self.size * self.aspect_ratio
-        if isinstance(width, Fraction):
-            width = float(width)
-        if isinstance(height, Fraction):
-            height = float(height)
+        width = to_decimal(self.size * self.aspect_ratio)
+        height = to_decimal(self.size * self.aspect_ratio)
         return f'{width}x{height}'
     
     def scale_str(self) -> str:
