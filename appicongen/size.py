@@ -13,22 +13,34 @@ class IconSize:
     subtype: Optional[str] = None
     role: Optional[str] = None
 
+    @property
     def scaled_size(self) -> int:
         return int(self.size * self.scale)
     
+    @property
     def filename(self) -> str:
-        return f'{self.scaled_size()}.png'
+        return f'{self.scaled_size}.png'
 
+    @property
+    def width(self) -> Union[int, Fraction]:
+        return self.size * self.aspect_ratio
+
+    @property
+    def height(self) -> Union[int, Fraction]:
+        return self.size
+
+    @property
     def size_str(self) -> str:
-        width = to_decimal(self.size * self.aspect_ratio)
-        height = to_decimal(self.size * self.aspect_ratio)
+        width = to_decimal(self.width)
+        height = to_decimal(self.height)
         return f'{width}x{height}'
     
+    @property
     def scale_str(self) -> str:
         return f'{self.scale}x'
 
     def __str__(self) -> str:
-        return f'{self.size_str()} ({self.scale}x)'
+        return f'{self.size_str} ({self.scale}x)'
 
 ICON_SIZES = {
     'ios': [

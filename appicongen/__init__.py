@@ -50,7 +50,7 @@ def main():
     # Resolve templates and (distinct) icon sizes
 
     templates = {template for template in ICON_SIZES.keys() if args.all or arg_dict[template.replace('-', '_')]}
-    size_files = {size.filename(): size.scaled_size() for template in templates for size in ICON_SIZES[template]}
+    size_files = {size.filename: size.scaled_size for template in templates for size in ICON_SIZES[template]}
 
     if not templates:
         print('==> No templates specified, thus not generating any icons (use --all to generate all)')
@@ -67,11 +67,11 @@ def main():
     print('==> Generating manifest')
     manifest = {
         'images': [{k: v for k, v in {
-            'size': size.size_str(),
-            'expected-size': str(size.scaled_size()),
-            'filename': size.filename(),
+            'size': size.size_str,
+            'expected-size': str(size.scaled_size),
+            'filename': size.filename,
             'idiom': size.idiom,
-            'scale': size.scale_str(),
+            'scale': size.scale_str,
             'role': size.role,
             'subtype': size.subtype,
         }.items() if v} for template in templates for size in ICON_SIZES[template]]
