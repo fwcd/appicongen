@@ -4,8 +4,10 @@ from PIL import Image, ImageDraw
 def open_image(path: Path) -> Image.Image:
     return Image.open(path)
 
-def generate_icon(input_img: Image.Image, output_path: Path, size: int, bigsurify: bool=False):
+def generate_icon(input_img: Image.Image, output_path: Path, width: int, height: int, bigsurify: bool=False):
     if bigsurify:
+        assert width == height, "Bigsurify is currently only supported for quadratic icons!"
+        size = width
         rect_size = int(size * 0.8)
         rect_offset = (size - rect_size) // 2
         corner_radius = int(size * 0.175)
@@ -22,5 +24,5 @@ def generate_icon(input_img: Image.Image, output_path: Path, size: int, bigsurif
     else:
         # Just scale the image
         with input_img.copy() as img:
-            img.thumbnail((size, size), Image.LANCZOS)
+            img.thumbnail((width, height), Image.LANCZOS)
             img.save(output_path)

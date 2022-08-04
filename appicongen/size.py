@@ -16,10 +16,18 @@ class IconSize:
     @property
     def scaled_size(self) -> int:
         return int(self.size * self.scale)
-    
+
+    @property
+    def scaled_width(self) -> int:
+        return int(self.width * self.scale)
+
+    @property
+    def scaled_height(self) -> int:
+        return int(self.height * self.scale)
+
     @property
     def filename(self) -> str:
-        return f'{self.scaled_size}.png'
+        return f'{self.scaled_width}x{self.scaled_height}.png'
 
     @property
     def width(self) -> Union[int, Fraction]:
