@@ -1,7 +1,9 @@
 import numpy as np
+import subprocess
 
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageOps
+from tempfile import NamedTemporaryFile
 from typing import Optional
 
 RESAMPLER = Image.LANCZOS
@@ -14,7 +16,21 @@ AVAILABLE_RESIZE_MODES = sorted(RESIZE_MODES.keys())
 DEFAULT_RESIZE_MODE = 'fit'
 
 def open_image(path: Path) -> Image.Image:
-    return Image.open(path)
+    if path.name.endswith('.svg'):
+        with NamedTemporaryFile(prefix='appicon-', suffix='.png') as f:
+            subprocess.run([
+                'inkscape',
+                '--export-type', 'png',
+                '--export-filename', f.name,
+                # TODO: Render different widths directly from svg
+                '--export-width', '1024',
+                str(path),
+            ], check=True)
+            img = Image.open(f.name)
+            img.load() # Load it now since the tempfile will be deleted
+            return img
+    else:
+        return Image.open(path)
 
 def find_mean_color(img: Image.Image) -> tuple:
     arr = np.asarray(img)
