@@ -1,5 +1,6 @@
 # Appicongen
 
+[![PyPI](https://img.shields.io/pypi/v/appicongen)](https://pypi.org/project/appicongen)
 [![Typecheck](https://github.com/fwcd/appicongen/actions/workflows/typecheck.yml/badge.svg)](https://github.com/fwcd/appicongen/actions/workflows/typecheck.yml)
 
 A small CLI tool for generating app icon sets for macOS, iOS and watchOS projects.
