@@ -42,7 +42,7 @@ class IconSize:
         width = to_decimal(self.width)
         height = to_decimal(self.height)
         return f'{width}x{height}'
-    
+
     @property
     def scale_str(self) -> str:
         return f'{self.scale}x'
@@ -97,10 +97,12 @@ ICON_SIZES = {
         IconSize(idiom='watch', size=46, scale=2, role='appLauncher', subtype='41mm'),
         IconSize(idiom='watch', size=50, scale=2, role='appLauncher', subtype='44mm'),
         IconSize(idiom='watch', size=51, scale=2, role='appLauncher', subtype='45mm'),
+        IconSize(idiom='watch', size=54, scale=2, role='appLauncher', subtype='49mm'),
         IconSize(idiom='watch', size=86, scale=2, role='quickLook', subtype='38mm'),
         IconSize(idiom='watch', size=98, scale=2, role='quickLook', subtype='42mm'),
         IconSize(idiom='watch', size=108, scale=2, role='quickLook', subtype='44mm'),
         IconSize(idiom='watch', size=117, scale=2, role='quickLook', subtype='45mm'),
+        IconSize(idiom='watch', size=129, scale=2, role='quickLook', subtype='49mm'),
         IconSize(idiom='watch-marketing', size=1024, scale=1),
     ]
 }
