@@ -1,11 +1,11 @@
-name: Deploy
+name: Publish
 on:
   push:
     tags:
       - '*'
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
