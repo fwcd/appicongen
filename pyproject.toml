@@ -2,5 +2,22 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "appicongen"
+version = "0.1.5"
+description = "CLI tool for generating app icon sets for macOS, iOS and watchOS projects"
+readme = "README.md"
+classifiers = ["Topic :: Utilities"]
+dependencies = [
+  "Pillow >= 9.0.1, < 10",
+  "numpy >= 1.23, < 2",
+]
+
+[project.scripts]
+appicongen = "appicongen:main"
+
+[tool.setuptools.packages]
+find = {}
+
 [tool.pyright]
 include = ["appicongen"]
