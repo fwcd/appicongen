@@ -14,8 +14,8 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/fwcd/appicongen"
-repository = "https://github.com/fwcd/appicongen"
+Homepage = "https://github.com/fwcd/appicongen"
+Repository = "https://github.com/fwcd/appicongen"
 
 [project.scripts]
 appicongen = "appicongen:main"
