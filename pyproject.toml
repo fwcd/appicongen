@@ -13,6 +13,10 @@ dependencies = [
   "numpy >= 1.23, < 2",
 ]
 
+[project.urls]
+homepage = "https://github.com/fwcd/appicongen"
+repository = "https://github.com/fwcd/appicongen"
+
 [project.scripts]
 appicongen = "appicongen:main"
 
