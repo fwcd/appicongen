@@ -51,7 +51,7 @@ def main():
     # Resolve templates and (distinct) icon sizes
 
     templates = {template for template in ICON_SIZES.keys() if args.all or arg_dict[template.replace('-', '_')]}
-    size_files = {size.filename: (size.scaled_width, size.scaled_height) for template in templates for size in ICON_SIZES[template]}
+    size_files = {size.filename: size for template in templates for size in ICON_SIZES[template]}
 
     if not templates:
         print('==> No templates specified, thus not generating any icons (use --all to generate all)')
@@ -61,15 +61,15 @@ def main():
     print('==> Generating scaled icons...')
     with open_image(input_path) as input_img:
         bg_color = find_mean_color(input_img)
-        for filename, (scaled_width, scaled_height) in size_files.items():
+        for filename, size in size_files.items():
             generate_icon(
                 input_img=input_img,
                 output_path=output_path / filename,
-                width=scaled_width,
-                height=scaled_height,
+                width=size.scaled_width,
+                height=size.scaled_height,
                 resize_mode=args.resize_mode,
                 bg_color=bg_color,
-                bigsurify=args.bigsurify
+                bigsurify=args.bigsurify and size.idiom == 'mac',
             )
     
     # Generate manifest
