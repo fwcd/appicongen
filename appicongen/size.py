@@ -10,6 +10,7 @@ class IconSize:
     size: Union[int, Fraction]
     scale: int
     aspect_ratio: Union[int, Fraction] = 1
+    platform: Optional[str] = None
     subtype: Optional[str] = None
     role: Optional[str] = None
 
@@ -56,23 +57,7 @@ class IconSize:
 
 ICON_SIZES = {
     'ios': [
-        IconSize(idiom='iphone', size=20, scale=2),
-        IconSize(idiom='iphone', size=20, scale=3),
-        IconSize(idiom='iphone', size=29, scale=2),
-        IconSize(idiom='iphone', size=29, scale=3),
-        IconSize(idiom='iphone', size=40, scale=2),
-        IconSize(idiom='iphone', size=40, scale=3),
-        IconSize(idiom='iphone', size=60, scale=2),
-        IconSize(idiom='iphone', size=60, scale=3),
-        IconSize(idiom='ipad', size=20, scale=1),
-        IconSize(idiom='ipad', size=20, scale=2),
-        IconSize(idiom='ipad', size=29, scale=1),
-        IconSize(idiom='ipad', size=29, scale=2),
-        IconSize(idiom='ipad', size=40, scale=1),
-        IconSize(idiom='ipad', size=40, scale=2),
-        IconSize(idiom='ipad', size=76, scale=2),
-        IconSize(idiom='ipad', size=Fraction('83.5'), scale=2),
-        IconSize(idiom='ios-marketing', size=1024, scale=1),
+        IconSize(idiom='universal', platform='ios', size=1024, scale=1),
     ],
     'macos': [
         IconSize(idiom='mac', size=16, scale=1),
