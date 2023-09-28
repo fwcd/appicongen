@@ -47,7 +47,8 @@ class IconSize:
     def bigsurifiable(self) -> bool:
         return self.idiom == 'mac'
 
-    def filename(self, suffix: str='') -> str:
+    def filename(self, bigsurify: bool=False) -> str:
+        suffix = 'b' if bigsurify and self.bigsurifiable else ''
         return f'{self.scaled_width}x{self.scaled_height}{suffix}.png'
 
     def __str__(self) -> str:

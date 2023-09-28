@@ -56,7 +56,7 @@ def main():
         if args.all or arg_dict[template.replace('-', '_')]
     }
     file_sizes = {
-        size.filename(suffix='b' if args.bigsurify and size.bigsurifiable else ''): size
+        size.filename(bigsurify=args.bigsurify): size
         for template in templates
         for size in ICON_SIZES[template]
     }
@@ -87,12 +87,13 @@ def main():
         'images': [{k: v for k, v in {
             'size': size.size_str,
             'expected-size': str(size.scaled_size),
-            'filename': filename,
+            'filename': size.filename(bigsurify=args.bigsurify),
             'idiom': size.idiom,
+            'platform': size.platform,
             'scale': size.scale_str,
             'role': size.role,
             'subtype': size.subtype,
-        }.items() if v} for filename, size in file_sizes.items()]
+        }.items() if v} for template in templates for size in ICON_SIZES[template]]
     }
     with open(output_path / args.manifest_name, 'w') as f:
         f.write(json.dumps(manifest, indent=2))
