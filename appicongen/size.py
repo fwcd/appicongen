@@ -26,10 +26,6 @@ class IconSize:
         return int(self.height * self.scale)
 
     @property
-    def filename(self) -> str:
-        return f'{self.scaled_width}x{self.scaled_height}.png'
-
-    @property
     def width(self) -> Union[int, Fraction]:
         return self.size * self.aspect_ratio
 
@@ -46,6 +42,13 @@ class IconSize:
     @property
     def scale_str(self) -> str:
         return f'{self.scale}x'
+
+    @property
+    def bigsurifiable(self) -> bool:
+        return self.idiom == 'mac'
+
+    def filename(self, suffix: str='') -> str:
+        return f'{self.scaled_width}x{self.scaled_height}{suffix}.png'
 
     def __str__(self) -> str:
         return f'{self.size_str} ({self.scale}x)'

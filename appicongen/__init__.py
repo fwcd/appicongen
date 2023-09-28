@@ -50,8 +50,16 @@ def main():
 
     # Resolve templates and (distinct) icon sizes
 
-    templates = {template for template in ICON_SIZES.keys() if args.all or arg_dict[template.replace('-', '_')]}
-    size_files = {size.filename: (size.scaled_width, size.scaled_height) for template in templates for size in ICON_SIZES[template]}
+    templates = {
+        template
+        for template in ICON_SIZES.keys()
+        if args.all or arg_dict[template.replace('-', '_')]
+    }
+    size_files = {
+        size.filename(suffix='b' if args.bigsurify and size.bigsurifiable else ''): size
+        for template in templates
+        for size in ICON_SIZES[template]
+    }
 
     if not templates:
         print('==> No templates specified, thus not generating any icons (use --all to generate all)')
@@ -61,15 +69,15 @@ def main():
     print('==> Generating scaled icons...')
     with open_image(input_path) as input_img:
         bg_color = find_mean_color(input_img)
-        for filename, (scaled_width, scaled_height) in size_files.items():
+        for filename, size in size_files.items():
             generate_icon(
                 input_img=input_img,
                 output_path=output_path / filename,
-                width=scaled_width,
-                height=scaled_height,
+                width=size.scaled_width,
+                height=size.scaled_height,
                 resize_mode=args.resize_mode,
                 bg_color=bg_color,
-                bigsurify=args.bigsurify
+                bigsurify=args.bigsurify and size.bigsurifiable,
             )
     
     # Generate manifest
@@ -79,12 +87,12 @@ def main():
         'images': [{k: v for k, v in {
             'size': size.size_str,
             'expected-size': str(size.scaled_size),
-            'filename': size.filename,
+            'filename': filename,
             'idiom': size.idiom,
             'scale': size.scale_str,
             'role': size.role,
             'subtype': size.subtype,
-        }.items() if v} for template in templates for size in ICON_SIZES[template]]
+        }.items() if v} for filename, size in size_files.items()]
     }
     with open(output_path / args.manifest_name, 'w') as f:
         f.write(json.dumps(manifest, indent=2))
