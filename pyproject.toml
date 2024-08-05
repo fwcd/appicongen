@@ -9,8 +9,8 @@ description = "CLI tool for generating app icon sets for macOS, iOS and watchOS 
 readme = "README.md"
 classifiers = ["Topic :: Utilities"]
 dependencies = [
-  "Pillow >= 9.0.1, < 10",
-  "numpy >= 1.23, < 2",
+  "Pillow >= 10.4, < 11",
+  "numpy >= 2.0, < 3",
 ]
 
 [project.urls]
