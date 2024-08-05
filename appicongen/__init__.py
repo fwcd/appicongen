@@ -90,7 +90,7 @@ def main():
             'filename': size.filename(bigsurify=args.bigsurify),
             'idiom': size.idiom,
             'platform': size.platform,
-            'scale': size.scale_str,
+            **({'scale': size.scale_str} if size.include_scale else {}),
             'role': size.role,
             'subtype': size.subtype,
         }.items() if v} for template in templates for size in ICON_SIZES[template]]

@@ -9,6 +9,7 @@ class IconSize:
     idiom: str
     size: Union[int, Fraction]
     scale: int
+    include_scale: bool = True
     aspect_ratio: Union[int, Fraction] = 1
     platform: Optional[str] = None
     subtype: Optional[str] = None
@@ -57,7 +58,7 @@ class IconSize:
 
 ICON_SIZES = {
     'ios': [
-        IconSize(idiom='universal', platform='ios', size=1024, scale=1),
+        IconSize(idiom='universal', platform='ios', size=1024, scale=1, include_scale=False),
     ],
     'macos': [
         IconSize(idiom='mac', size=16, scale=1),
