@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageOps
 from tempfile import NamedTemporaryFile
 from typing import Optional
 
-RESAMPLER = Image.LANCZOS
+RESAMPLER = Image.Resampling.LANCZOS
 RESIZE_MODES = {
     'fit': lambda img, size, bg: ImageOps.fit(img, size=size, method=RESAMPLER),
     'pad': lambda img, size, bg: ImageOps.pad(img, size=size, color=bg, method=RESAMPLER),
