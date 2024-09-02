@@ -60,7 +60,7 @@ def generate_icon(
             draw.rounded_rectangle((0, 0, rect_size, rect_size), fill=255, radius=corner_radius)
             with input_img.copy() as base_img:
                 base_img.thumbnail((rect_size, rect_size), resample=RESAMPLER)
-                with Image.new(base_img.mode, (size, size)) as img: # pyright: ignore[reportGeneralTypeIssues]
+                with Image.new('RGBA', (size, size)) as img: # pyright: ignore[reportGeneralTypeIssues]
                     img.paste(base_img, (rect_offset, rect_offset), mask)
                     img.save(output_path)
     else:
