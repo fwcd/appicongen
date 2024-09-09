@@ -5,6 +5,8 @@ build
 *.egg-info
 *.pyc
 dist
+
+.venv
 venv
 
 /*.png
